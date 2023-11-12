@@ -15,4 +15,7 @@ export class UserRepository {
       where: { id: dto.id },
     });
   }
+  findAll() {
+    return this.prismaService.user.findMany();
+  }
 }

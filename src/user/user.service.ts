@@ -15,6 +15,9 @@ export class UserService {
   findOne(dto: FindUserDto) {
     return this.userRepository.findOne(dto);
   }
+  findAll() {
+    return this.userRepository.findAll();
+  }
 
   private hashPassword(password: string) {
     return hashSync(password, genSaltSync(10));

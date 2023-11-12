@@ -11,6 +11,10 @@ export class UserController {
   findOne(@Body() dto: FindUserDto) {
     return this.userService.findOne(dto);
   }
+  @Get('all')
+  findAll() {
+    return this.userService.findAll();
+  }
   @Post()
   addUser(@Body() dto: AddUserDto) {
     return this.userService.add(dto);
