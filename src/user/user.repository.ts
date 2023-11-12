@@ -7,15 +7,15 @@ import { FindUserDto } from '@user/dto/find-user.dto';
 export class UserRepository {
   constructor(private readonly prismaService: PrismaService) {}
 
-  create(dto: AddUserDto) {
+  public create(dto: AddUserDto) {
     return this.prismaService.user.create({ data: { ...dto, roles: ['USER'] } });
   }
-  findOne(dto: FindUserDto) {
+  public findOne(dto: FindUserDto) {
     return this.prismaService.user.findFirst({
       where: { id: dto.id },
     });
   }
-  findAll() {
+  public findAll() {
     return this.prismaService.user.findMany();
   }
 }

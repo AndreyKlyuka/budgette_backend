@@ -7,15 +7,15 @@ import { FindUserDto } from '@user/dto/find-user.dto';
 @Injectable()
 export class UserService {
   constructor(private readonly userRepository: UserRepository) {}
-  add(dto: AddUserDto) {
+  public add(dto: AddUserDto) {
     const hashedPassword = this.hashPassword(dto.password);
     return this.userRepository.create({ ...dto, password: hashedPassword });
   }
 
-  findOne(dto: FindUserDto) {
+  public findOne(dto: FindUserDto) {
     return this.userRepository.findOne(dto);
   }
-  findAll() {
+  public findAll() {
     return this.userRepository.findAll();
   }
 
