@@ -1,3 +1,3 @@
 export class FindUserDto {
-  id: string;
+    id: string;
 }

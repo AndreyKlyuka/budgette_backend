@@ -5,18 +5,18 @@ import { FindUserDto } from '@user/dto/find-user.dto';
 
 @Controller('user')
 export class UserController {
-  constructor(private readonly userService: UserService) {}
+    constructor(private readonly userService: UserService) {}
 
-  @Get()
-  findOne(@Body() dto: FindUserDto) {
-    return this.userService.findOne(dto);
-  }
-  @Get('all')
-  findAll() {
-    return this.userService.findAll();
-  }
-  @Post()
-  addUser(@Body() dto: AddUserDto) {
-    return this.userService.add(dto);
-  }
+    @Get()
+    findOne(@Body() dto: FindUserDto) {
+        return this.userService.findOne(dto);
+    }
+    @Get('all')
+    findAll() {
+        return this.userService.findAll();
+    }
+    @Post()
+    addUser(@Body() dto: AddUserDto) {
+        return this.userService.add(dto);
+    }
 }

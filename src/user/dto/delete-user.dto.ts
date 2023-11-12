@@ -1,3 +1,3 @@
 export class DeleteUserDto {
-  email: string;
+    email: string;
 }
