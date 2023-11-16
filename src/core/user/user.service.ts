@@ -1,7 +1,8 @@
-import { ConflictException, Injectable } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { CreateOrUpdateUserDto } from './dto';
 import { UserRepository } from './repository/user.repository';
 import { genSaltSync, hashSync } from 'bcrypt';
+import { BusinessException, ErrorCode } from '@exceptions';
 
 @Injectable()
 export class UserService {
@@ -10,7 +11,7 @@ export class UserService {
     public create(dto: CreateOrUpdateUserDto) {
         const existingUser = this.findByEmail(dto.email);
         if (existingUser) {
-            throw new ConflictException('User with this email already exist');
+            throw new BusinessException(ErrorCode.USER_ALREADY_EXIST);
         }
         const hashedPassword = this.hashPassword(dto.password);
         return this.userRepository.create({ ...dto, password: hashedPassword });

@@ -21,7 +21,9 @@
             "@database": ["src/database"],
             "@database/*": ["src/database/*"],
             "@core": ["src/core"],
-            "@core/*": ["src/core/*"]
+            "@core/*": ["src/core/*"],
+            "@exceptions": ["src/common/exceptions"],
+            "@exceptions/*": ["src/common/exceptions/*"]
         }
     }
 }
