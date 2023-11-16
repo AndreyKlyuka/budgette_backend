@@ -17,10 +17,10 @@ export class UserService {
         return this.userRepository.create({ ...dto, password: hashedPassword });
     }
 
-    public getOne(id: string) {
+    public findOne(id: string) {
         return this.userRepository.find(id);
     }
-    public getAll() {
+    public findAll() {
         return this.userRepository.findAll();
     }
 

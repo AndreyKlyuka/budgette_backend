@@ -8,12 +8,12 @@ export class UserController {
 
     @Get(':id')
     getOne(@Param('id') id: string) {
-        return this.userService.getOne(id);
+        return this.userService.findOne(id);
     }
     @Get()
     getAll() {
         console.log('all');
-        return this.userService.getAll();
+        return this.userService.findAll();
     }
     @Post()
     create(@Body() dto: CreateOrUpdateUserDto) {
