@@ -1,31 +1,32 @@
 import { Injectable } from '@nestjs/common';
 import { CreateOrUpdateUserDto } from '../dto';
 import { PrismaService } from '@database/prisma.service';
+import { User } from '@prisma/client';
 
 @Injectable()
 export class UserRepository {
     constructor(private readonly prismaService: PrismaService) {}
 
-    public async create(dto: CreateOrUpdateUserDto) {
+    public async create(dto: CreateOrUpdateUserDto): Promise<User> {
         return this.prismaService.user.create({ data: { ...dto, roles: ['USER'] } });
     }
-    public async find(id: string) {
+    public async find(id: string): Promise<User> {
         return this.prismaService.user.findFirst({
             where: { id: id },
         });
     }
-    public async findAll() {
+    public async findAll(): Promise<User[]> {
         return this.prismaService.user.findMany();
     }
 
-    public async update(id: string, data: CreateOrUpdateUserDto) {
+    public async update(id: string, data: CreateOrUpdateUserDto): Promise<User> {
         return this.prismaService.user.update({
             where: { id: id },
             data: data,
         });
     }
 
-    public async findByEmail(email: string) {
+    public async findByEmail(email: string): Promise<User> {
         return this.prismaService.user.findFirst({
             where: { email: email },
         });

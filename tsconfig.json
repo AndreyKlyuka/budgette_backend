@@ -22,6 +22,8 @@
             "@config/*": ["src/config/*"],
             "@core": ["src/core"],
             "@core/*": ["src/core/*"],
+            "@entities": ["src/core/entities"],
+            "@entities/*": ["src/core/entities/*"],
             "@database": ["src/database"],
             "@database/*": ["src/database/*"],
 
