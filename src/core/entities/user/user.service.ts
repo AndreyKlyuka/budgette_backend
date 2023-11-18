@@ -11,7 +11,7 @@ export class UserService {
     public create(dto: CreateOrUpdateUserDto) {
         const existingUser = this.findByEmail(dto.email);
         if (existingUser) {
-            throw new BusinessException(ErrorCode.USER_ALREADY_EXIST);
+            throw new BusinessException(ErrorCode.USER_EMAIL_ALREADY_EXIST);
         }
         const hashedPassword = this.hashPassword(dto.password);
         return this.userRepository.create({ ...dto, password: hashedPassword });
