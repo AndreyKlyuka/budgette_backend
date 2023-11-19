@@ -55,6 +55,7 @@ export class AuthService {
         if (!tokens) {
             throw new UnauthorizedException();
         }
+
         res.cookie(AuthConstant.REFRESH_TOKEN_COOKIES_NAME, tokens.refreshToken.token, {
             httpOnly: true,
             sameSite: 'lax',

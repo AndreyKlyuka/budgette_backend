@@ -15,8 +15,8 @@ export class UserService {
         if (user) {
             throw new BusinessException(ErrorCode.USER_EMAIL_ALREADY_EXIST);
         }
-        const hashedPassword: string = this.hashPassword(dto.password);
 
+        const hashedPassword: string = this.hashPassword(dto.password);
         return this.userRepository.create({ ...dto, password: hashedPassword });
     }
     public async findOneByEmail(email: string): Promise<User> {
@@ -25,7 +25,6 @@ export class UserService {
     public async findAll(): Promise<User[]> {
         return this.userRepository.findAll();
     }
-
     private hashPassword(password: string): string {
         return hashSync(password, genSaltSync(10));
     }

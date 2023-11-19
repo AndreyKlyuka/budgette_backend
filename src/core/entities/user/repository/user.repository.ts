@@ -15,11 +15,6 @@ export class UserRepository {
             where: { email: email },
         });
     }
-    public async findById(id: string): Promise<User> {
-        return this.prismaService.user.findFirst({
-            where: { id: id },
-        });
-    }
     public async findAll(): Promise<User[]> {
         return this.prismaService.user.findMany();
     }
