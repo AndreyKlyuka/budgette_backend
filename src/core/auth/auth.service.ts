@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { HttpStatus, Injectable, Res, UnauthorizedException } from '@nestjs/common';
 import { LoginDto, RegisterDto } from './dto';
 import { UserService } from '@entities/user/user.service';
 import { Token, User } from '@prisma/client';
@@ -11,6 +11,7 @@ import { v4 } from 'uuid';
 import { add } from 'date-fns';
 import { ConfigService } from '@nestjs/config';
 import { AuthConstant } from './constants/auth.constant';
+import { Response } from 'express';
 
 @Injectable()
 export class AuthService {
@@ -47,7 +48,21 @@ export class AuthService {
             this.configService.get(AuthConstant.JWT_REFRESH_EXP_IN_DAYS),
         );
 
-        return { accessToken, refreshToken };
+        return { accessToken: 'Bearer ' + accessToken, refreshToken };
+    }
+
+    public setRefreshTokenToCookies(tokens: AuthTokens, res: Response): void {
+        if (!tokens) {
+            throw new UnauthorizedException();
+        }
+        res.cookie(AuthConstant.REFRESH_TOKEN_COOKIES_NAME, tokens.refreshToken.token, {
+            httpOnly: true,
+            sameSite: 'lax',
+            expires: new Date(tokens.refreshToken.exp),
+            secure: this.configService.get(AuthConstant.NODE_ENV, AuthConstant.DEVELOPMENT) === AuthConstant.PRODUCTION,
+            path: '/',
+        });
+        res.status(HttpStatus.CREATED).json(tokens);
     }
 
     private async generateRefreshToken(userId: string, expireTimeInDays: number): Promise<Token> {

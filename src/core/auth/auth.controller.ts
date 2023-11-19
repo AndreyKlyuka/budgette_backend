@@ -1,9 +1,10 @@
-import { Body, Controller, Post } from '@nestjs/common';
+import { Body, Controller, Get, Post, Res } from '@nestjs/common';
 import { LoginDto, RegisterDto } from './dto';
 import { AuthService } from './auth.service';
 import { User } from '@prisma/client';
 import { AccessToken, AuthTokens } from './interfaces/tokens.interface';
 import { BusinessException, ErrorCode } from '@exceptions';
+import { Response } from 'express';
 
 @Controller('auth')
 export class AuthController {
@@ -21,13 +22,16 @@ export class AuthController {
     }
 
     @Post('login')
-    async login(@Body() dto: LoginDto): Promise<AccessToken> {
+    async login(@Body() dto: LoginDto, @Res() res: Response) {
         const tokens: AuthTokens = await this.authService.login(dto);
 
         if (!tokens) {
             throw new BusinessException(ErrorCode.BAD_REQUEST_TO_LOGIN_USER);
         }
-
-        return { accessToken: tokens.accessToken };
+        this.authService.setRefreshTokenToCookies(tokens, res);
+        // return { accessToken: tokens.accessToken };
     }
+    //
+    // @Get('refresh')
+    // refreshTokens() {}
 }

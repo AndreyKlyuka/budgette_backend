@@ -27,6 +27,8 @@
             "@database": ["src/database"],
             "@database/*": ["src/database/*"],
 
+            "@constants": ["src/common/constants"],
+            "@constants/*": ["src/common/constants/*"],
             "@decorators": ["src/common/decorators"],
             "@decorators/*": ["src/common/decorators/*"],
             "@exceptions": ["src/common/exceptions"],

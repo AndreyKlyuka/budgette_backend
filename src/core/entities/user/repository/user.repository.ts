@@ -10,7 +10,12 @@ export class UserRepository {
     public async create(dto: CreateOrUpdateUserDto): Promise<User> {
         return this.prismaService.user.create({ data: { ...dto, roles: ['USER'] } });
     }
-    public async find(id: string): Promise<User> {
+    public async findByEmail(email: string): Promise<User> {
+        return this.prismaService.user.findFirst({
+            where: { email: email },
+        });
+    }
+    public async findById(id: string): Promise<User> {
         return this.prismaService.user.findFirst({
             where: { id: id },
         });
@@ -18,17 +23,10 @@ export class UserRepository {
     public async findAll(): Promise<User[]> {
         return this.prismaService.user.findMany();
     }
-
     public async update(id: string, data: CreateOrUpdateUserDto): Promise<User> {
         return this.prismaService.user.update({
             where: { id: id },
             data: data,
-        });
-    }
-
-    public async findByEmail(email: string): Promise<User> {
-        return this.prismaService.user.findFirst({
-            where: { email: email },
         });
     }
 }
