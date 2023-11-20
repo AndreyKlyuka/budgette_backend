@@ -15,4 +15,14 @@ export class TokenService {
         }
         return refreshToken;
     }
+
+    public async deleteByToken(token: string): Promise<Token> {
+        const deletedToken: Token = await this.tokenRepository.deleteByToken(token);
+
+        if (!deletedToken) {
+            throw new BusinessException(ErrorCode.REFRESH_TOKEN_NOT_FOUND);
+        }
+
+        return deletedToken;
+    }
 }

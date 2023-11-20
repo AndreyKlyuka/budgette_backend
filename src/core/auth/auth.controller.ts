@@ -2,9 +2,11 @@ import { Body, Controller, Get, Post, Res } from '@nestjs/common';
 import { LoginDto, RegisterDto } from './dto';
 import { AuthService } from './auth.service';
 import { User } from '@prisma/client';
-import { AccessToken, AuthTokens } from './interfaces/tokens.interface';
+import { AuthTokens } from './interfaces/tokens.interface';
 import { BusinessException, ErrorCode } from '@exceptions';
 import { Response } from 'express';
+import { Cookie } from '@decorators';
+import { AuthConstant } from '@core/auth/constants/auth.constant';
 
 @Controller('auth')
 export class AuthController {
@@ -22,16 +24,28 @@ export class AuthController {
     }
 
     @Post('login')
-    async login(@Body() dto: LoginDto, @Res() res: Response) {
+    async login(@Body() dto: LoginDto, @Res() res: Response): Promise<void> {
         const tokens: AuthTokens = await this.authService.login(dto);
 
         if (!tokens) {
             throw new BusinessException(ErrorCode.BAD_REQUEST_TO_LOGIN_USER);
         }
+
         this.authService.setRefreshTokenToCookies(tokens, res);
-        // return { accessToken: tokens.accessToken };
     }
-    //
-    // @Get('refresh')
-    // refreshTokens() {}
+
+    @Get('refresh-tokens')
+    async refreshTokens(@Cookie(AuthConstant.REFRESH_TOKEN_COOKIES_NAME) refreshToken: string, @Res() res: Response) {
+        if (!refreshToken) {
+            throw new BusinessException(ErrorCode.REFRESH_TOKEN_NOT_FOUND);
+        }
+
+        const tokens: AuthTokens = await this.authService.refreshTokens(refreshToken);
+
+        if (!tokens) {
+            throw new BusinessException(ErrorCode.REFRESH_TOKENS_UNABLE);
+        }
+
+        this.authService.setRefreshTokenToCookies(tokens, res);
+    }
 }

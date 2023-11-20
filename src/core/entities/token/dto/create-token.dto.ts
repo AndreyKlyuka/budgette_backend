@@ -1,5 +1,5 @@
 export class CreateTokenDto {
-    tokenName: string;
+    token: string;
     expiresIn: Date;
     userId: string;
 }

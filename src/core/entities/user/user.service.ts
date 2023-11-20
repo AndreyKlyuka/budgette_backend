@@ -22,6 +22,9 @@ export class UserService {
     public async findOneByEmail(email: string): Promise<User> {
         return this.userRepository.findByEmail(email);
     }
+    public async findOneById(id: string): Promise<User> {
+        return this.userRepository.findById(id);
+    }
     public async findAll(): Promise<User[]> {
         return this.userRepository.findAll();
     }

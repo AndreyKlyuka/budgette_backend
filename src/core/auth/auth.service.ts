@@ -1,4 +1,4 @@
-import { HttpStatus, Injectable, Res, UnauthorizedException } from '@nestjs/common';
+import { HttpStatus, Injectable } from '@nestjs/common';
 import { LoginDto, RegisterDto } from './dto';
 import { UserService } from '@entities/user/user.service';
 import { Token, User } from '@prisma/client';
@@ -35,9 +35,38 @@ export class AuthService {
         const user: User = await this.findExistUserByEmail(dto.email);
 
         if (!user || !compareSync(dto.password, user.password)) {
-            throw new BusinessException(ErrorCode.BAD_REQUEST_TO_LOGIN_USER);
+            throw new BusinessException(ErrorCode.INCORRECT_PASSWORD_OR_EMAIL);
+        }
+        return this.generateTokens(user);
+    }
+
+    public setRefreshTokenToCookies(tokens: AuthTokens, res: Response): void {
+        if (!tokens) {
+            throw new BusinessException(ErrorCode.REFRESH_TOKEN_NOT_FOUND);
         }
 
+        res.cookie(AuthConstant.REFRESH_TOKEN_COOKIES_NAME, tokens.refreshToken.token, {
+            httpOnly: true,
+            sameSite: 'lax',
+            expires: new Date(tokens.refreshToken.exp),
+            secure: this.configService.get(AuthConstant.NODE_ENV, AuthConstant.DEVELOPMENT) === AuthConstant.PRODUCTION,
+            path: '/',
+        });
+        res.status(HttpStatus.CREATED).json({ accessToken: tokens.accessToken });
+    }
+
+    public async refreshTokens(refreshToken: string): Promise<AuthTokens> {
+        const existRefreshToken: Token = await this.tokenService.deleteByToken(refreshToken);
+
+        if (!existRefreshToken) {
+            throw new BusinessException(ErrorCode.REFRESH_TOKEN_NOT_FOUND);
+        }
+
+        const user: User = await this.findExistUserById(existRefreshToken.userId);
+        return this.generateTokens(user);
+    }
+
+    private async generateTokens(user: User): Promise<AuthTokens> {
         const accessToken: string = this.jwtService.sign({
             id: user.id,
             email: user.email,
@@ -51,24 +80,9 @@ export class AuthService {
         return { accessToken: 'Bearer ' + accessToken, refreshToken };
     }
 
-    public setRefreshTokenToCookies(tokens: AuthTokens, res: Response): void {
-        if (!tokens) {
-            throw new UnauthorizedException();
-        }
-
-        res.cookie(AuthConstant.REFRESH_TOKEN_COOKIES_NAME, tokens.refreshToken.token, {
-            httpOnly: true,
-            sameSite: 'lax',
-            expires: new Date(tokens.refreshToken.exp),
-            secure: this.configService.get(AuthConstant.NODE_ENV, AuthConstant.DEVELOPMENT) === AuthConstant.PRODUCTION,
-            path: '/',
-        });
-        res.status(HttpStatus.CREATED).json(tokens);
-    }
-
     private async generateRefreshToken(userId: string, expireTimeInDays: number): Promise<Token> {
         return this.tokenService.create({
-            tokenName: v4(),
+            token: v4(),
             expiresIn: add(new Date(), { days: expireTimeInDays }),
             userId: userId,
         });
@@ -76,5 +90,8 @@ export class AuthService {
 
     private async findExistUserByEmail(email: string): Promise<User> {
         return this.userService.findOneByEmail(email);
+    }
+    private async findExistUserById(id: string): Promise<User> {
+        return this.userService.findOneById(id);
     }
 }

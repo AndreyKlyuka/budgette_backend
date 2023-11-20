@@ -7,6 +7,8 @@ enum AppErrorCode {
     BAD_REQUEST_TO_LOGIN_USER = 'Unable to login user with this data',
     USER_NOT_FOUND = 'User not found',
     REFRESH_TOKEN_NOT_CREATED = 'Refresh token not created',
+    REFRESH_TOKEN_NOT_FOUND = 'Refresh token not found',
+    REFRESH_TOKENS_UNABLE = 'Unable to refresh tokens',
 }
 export const ErrorCode = { ...AppErrorCode };
 
@@ -26,7 +28,7 @@ export const ErrorBody: ErrorBodyType = {
         message: ErrorCode.INCORRECT_PASSWORD_OR_EMAIL,
     },
     [ErrorCode.BAD_REQUEST_TO_REGISTER_USER]: {
-        statusCode: HttpStatus.BAD_REQUEST,
+        statusCode: HttpStatus.CONFLICT,
         message: ErrorCode.BAD_REQUEST_TO_REGISTER_USER,
     },
     [ErrorCode.BAD_REQUEST_TO_LOGIN_USER]: {
@@ -40,5 +42,13 @@ export const ErrorBody: ErrorBodyType = {
     [ErrorCode.REFRESH_TOKEN_NOT_CREATED]: {
         statusCode: HttpStatus.INTERNAL_SERVER_ERROR,
         message: ErrorCode.REFRESH_TOKEN_NOT_CREATED,
+    },
+    [ErrorCode.REFRESH_TOKEN_NOT_FOUND]: {
+        statusCode: HttpStatus.UNAUTHORIZED,
+        message: ErrorCode.REFRESH_TOKEN_NOT_FOUND,
+    },
+    [ErrorCode.REFRESH_TOKENS_UNABLE]: {
+        statusCode: HttpStatus.UNAUTHORIZED,
+        message: ErrorCode.REFRESH_TOKENS_UNABLE,
     },
 };
