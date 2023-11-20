@@ -1,11 +1,11 @@
-import { Body, Controller, Get, Post, Res } from '@nestjs/common';
+import { Body, Controller, Get, Post, Req, Res } from '@nestjs/common';
 import { LoginDto, RegisterDto } from './dto';
 import { AuthService } from './auth.service';
 import { User } from '@prisma/client';
 import { AuthTokens } from './interfaces/tokens.interface';
 import { BusinessException, ErrorCode } from '@exceptions';
 import { Response } from 'express';
-import { Cookie } from '@decorators';
+import { Cookie, UserAgent } from '@decorators';
 import { AuthConstant } from '@core/auth/constants/auth.constant';
 
 @Controller('auth')
@@ -24,7 +24,8 @@ export class AuthController {
     }
 
     @Post('login')
-    async login(@Body() dto: LoginDto, @Res() res: Response): Promise<void> {
+    async login(@Body() dto: LoginDto, @Res() res: Response, @UserAgent() agent: string): Promise<void> {
+        console.log({ agent });
         const tokens: AuthTokens = await this.authService.login(dto);
 
         if (!tokens) {
