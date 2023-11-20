@@ -11,6 +11,12 @@ export class TokenRepository {
             data: { token: dto.token, exp: dto.expiresIn, userId: dto.userId },
         });
     }
+
+    public async findByToken(token: string): Promise<Token> {
+        return this.prismaService.token.findUnique({
+            where: { token: token },
+        });
+    }
     public async deleteByToken(token: string): Promise<Token> {
         return this.prismaService.token.delete({
             where: { token: token },

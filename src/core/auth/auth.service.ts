@@ -40,6 +40,22 @@ export class AuthService {
         return this.generateTokens(user);
     }
 
+    public async refreshTokens(refreshToken: string): Promise<AuthTokens> {
+        const existRefreshToken: Token = await this.tokenService.findByToken(refreshToken);
+
+        if (!existRefreshToken) {
+            throw new BusinessException(ErrorCode.REFRESH_TOKEN_NOT_FOUND);
+        }
+
+        await this.tokenService.deleteByToken(existRefreshToken.token);
+
+        if (new Date(existRefreshToken.exp) < new Date()) {
+            throw new BusinessException(ErrorCode.REFRESH_TOKEN_NOT_FOUND);
+        }
+        const user: User = await this.findExistUserById(existRefreshToken.userId);
+        return this.generateTokens(user);
+    }
+
     public setRefreshTokenToCookies(tokens: AuthTokens, res: Response): void {
         if (!tokens) {
             throw new BusinessException(ErrorCode.REFRESH_TOKEN_NOT_FOUND);
@@ -53,17 +69,6 @@ export class AuthService {
             path: '/',
         });
         res.status(HttpStatus.CREATED).json({ accessToken: tokens.accessToken });
-    }
-
-    public async refreshTokens(refreshToken: string): Promise<AuthTokens> {
-        const existRefreshToken: Token = await this.tokenService.deleteByToken(refreshToken);
-
-        if (!existRefreshToken) {
-            throw new BusinessException(ErrorCode.REFRESH_TOKEN_NOT_FOUND);
-        }
-
-        const user: User = await this.findExistUserById(existRefreshToken.userId);
-        return this.generateTokens(user);
     }
 
     private async generateTokens(user: User): Promise<AuthTokens> {

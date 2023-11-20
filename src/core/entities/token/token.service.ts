@@ -25,4 +25,8 @@ export class TokenService {
 
         return deletedToken;
     }
+
+    public async findByToken(token: string): Promise<Token> {
+        return this.tokenRepository.findByToken(token);
+    }
 }
