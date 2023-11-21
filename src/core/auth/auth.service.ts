@@ -2,7 +2,7 @@ import { HttpStatus, Injectable } from '@nestjs/common';
 import { LoginDto, RegisterDto } from './dto';
 import { UserService } from '@entities/user/user.service';
 import { Token, User } from '@prisma/client';
-import { AuthTokens } from './interfaces/tokens.interface';
+import { AuthTokens } from './interfaces';
 import { compareSync } from 'bcrypt';
 import { BusinessException, ErrorCode } from '@exceptions';
 import { JwtService } from '@nestjs/jwt';

@@ -3,11 +3,12 @@ import { Response } from 'express';
 import { LoginDto, RegisterDto } from './dto';
 import { AuthService } from './auth.service';
 import { User } from '@prisma/client';
-import { AuthTokens } from './interfaces/tokens.interface';
 import { BusinessException, ErrorCode } from '@exceptions';
 import { Cookie, Public, UserAgent } from '@decorators';
 import { AuthConstant } from '@constants';
+import { AuthTokens } from './interfaces';
 import { UserResponse } from '@entities/user/responses';
+``;
 
 @Public()
 @Controller('auth')
