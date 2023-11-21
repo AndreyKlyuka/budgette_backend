@@ -24,9 +24,8 @@ export class AuthController {
     }
 
     @Post('login')
-    async login(@Body() dto: LoginDto, @Res() res: Response, @UserAgent() agent: string): Promise<void> {
-        console.log({ agent });
-        const tokens: AuthTokens = await this.authService.login(dto);
+    async login(@Body() dto: LoginDto, @Res() res: Response, @UserAgent() userAgent: string): Promise<void> {
+        const tokens: AuthTokens = await this.authService.login(dto, userAgent);
 
         if (!tokens) {
             throw new BusinessException(ErrorCode.BAD_REQUEST_TO_LOGIN_USER);
@@ -36,12 +35,16 @@ export class AuthController {
     }
 
     @Get('refresh-tokens')
-    async refreshTokens(@Cookie(AuthConstant.REFRESH_TOKEN_COOKIES_NAME) refreshToken: string, @Res() res: Response) {
+    async refreshTokens(
+        @Cookie(AuthConstant.REFRESH_TOKEN_COOKIES_NAME) refreshToken: string,
+        @Res() res: Response,
+        @UserAgent() userAgent: string,
+    ) {
         if (!refreshToken) {
             throw new BusinessException(ErrorCode.REFRESH_TOKEN_NOT_FOUND);
         }
 
-        const tokens: AuthTokens = await this.authService.refreshTokens(refreshToken);
+        const tokens: AuthTokens = await this.authService.refreshTokens(refreshToken, userAgent);
 
         if (!tokens) {
             throw new BusinessException(ErrorCode.REFRESH_TOKENS_UNABLE);

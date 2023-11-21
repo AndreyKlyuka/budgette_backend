@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { TokenRepository } from './repository/token.repository';
-import { CreateTokenDto } from '../token/dto';
+import { CreateOrUpdateTokenDto } from '../token/dto';
 import { Token } from '@prisma/client';
 import { BusinessException, ErrorCode } from '@exceptions';
 
@@ -8,12 +8,11 @@ import { BusinessException, ErrorCode } from '@exceptions';
 export class TokenService {
     constructor(private readonly tokenRepository: TokenRepository) {}
 
-    public async create(dto: CreateTokenDto): Promise<Token> {
-        const refreshToken: Token = await this.tokenRepository.create(dto);
-        if (!refreshToken) {
-            throw new BusinessException(ErrorCode.REFRESH_TOKEN_NOT_CREATED);
+    public async upsert(dto: CreateOrUpdateTokenDto, token: string): Promise<Token> {
+        if (!token) {
+            return this.createTokenOrThrowExceptionIfFailed(this.tokenRepository.create(dto));
         }
-        return refreshToken;
+        return this.createTokenOrThrowExceptionIfFailed(this.tokenRepository.update(dto, token));
     }
 
     public async deleteByToken(token: string): Promise<Token> {
@@ -28,5 +27,17 @@ export class TokenService {
 
     public async findByToken(token: string): Promise<Token> {
         return this.tokenRepository.findByToken(token);
+    }
+    public async findByUserIdAndUserAgent(userId: string, uerAgent: string) {
+        return this.tokenRepository.findByUserIdAndUserAgent(userId, uerAgent);
+    }
+
+    private async createTokenOrThrowExceptionIfFailed(createCallback: Promise<Token>): Promise<Token> {
+        const refreshToken: Token = await createCallback;
+
+        if (!refreshToken) {
+            throw new BusinessException(ErrorCode.REFRESH_TOKEN_NOT_CREATED);
+        }
+        return refreshToken;
     }
 }

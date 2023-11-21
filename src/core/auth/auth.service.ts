@@ -31,16 +31,16 @@ export class AuthService {
         return this.userService.create(dto);
     }
 
-    public async login(dto: LoginDto): Promise<AuthTokens> {
+    public async login(dto: LoginDto, userAgent: string): Promise<AuthTokens> {
         const user: User = await this.findExistUserByEmail(dto.email);
 
         if (!user || !compareSync(dto.password, user.password)) {
             throw new BusinessException(ErrorCode.INCORRECT_PASSWORD_OR_EMAIL);
         }
-        return this.generateTokens(user);
+        return this.generateTokens(user, userAgent);
     }
 
-    public async refreshTokens(refreshToken: string): Promise<AuthTokens> {
+    public async refreshTokens(refreshToken: string, userAgent: string): Promise<AuthTokens> {
         const existRefreshToken: Token = await this.tokenService.findByToken(refreshToken);
 
         if (!existRefreshToken) {
@@ -53,7 +53,7 @@ export class AuthService {
             throw new BusinessException(ErrorCode.REFRESH_TOKEN_NOT_FOUND);
         }
         const user: User = await this.findExistUserById(existRefreshToken.userId);
-        return this.generateTokens(user);
+        return this.generateTokens(user, userAgent);
     }
 
     public setRefreshTokenToCookies(tokens: AuthTokens, res: Response): void {
@@ -71,7 +71,7 @@ export class AuthService {
         res.status(HttpStatus.CREATED).json({ accessToken: tokens.accessToken });
     }
 
-    private async generateTokens(user: User): Promise<AuthTokens> {
+    private async generateTokens(user: User, userAgent: string): Promise<AuthTokens> {
         const accessToken: string = this.jwtService.sign({
             id: user.id,
             email: user.email,
@@ -79,18 +79,30 @@ export class AuthService {
         });
         const refreshToken: Token = await this.generateRefreshToken(
             user.id,
+            userAgent,
             this.configService.get(AuthConstant.JWT_REFRESH_EXP_IN_DAYS),
         );
 
         return { accessToken: 'Bearer ' + accessToken, refreshToken };
     }
 
-    private async generateRefreshToken(userId: string, expireTimeInDays: number): Promise<Token> {
-        return this.tokenService.create({
-            token: v4(),
-            expiresIn: add(new Date(), { days: expireTimeInDays }),
-            userId: userId,
-        });
+    private async generateRefreshToken(
+        userId: string,
+        userAgent: string,
+        expireTimeInDays: number = 30,
+    ): Promise<Token> {
+        const previousRefreshToken: Token = await this.tokenService.findByUserIdAndUserAgent(userId, userAgent);
+        const token: string = previousRefreshToken?.token ?? '';
+
+        return this.tokenService.upsert(
+            {
+                token: v4(),
+                expiresIn: add(new Date(), { days: expireTimeInDays }),
+                userId: userId,
+                userAgent: userAgent,
+            },
+            token,
+        );
     }
 
     private async findExistUserByEmail(email: string): Promise<User> {
