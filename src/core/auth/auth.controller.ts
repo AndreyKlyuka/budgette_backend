@@ -1,18 +1,20 @@
-import { Body, Controller, Get, Post, Res } from '@nestjs/common';
+import { Body, ClassSerializerInterceptor, Controller, Get, Post, Res, UseInterceptors } from '@nestjs/common';
+import { Response } from 'express';
 import { LoginDto, RegisterDto } from './dto';
 import { AuthService } from './auth.service';
 import { User } from '@prisma/client';
 import { AuthTokens } from './interfaces/tokens.interface';
 import { BusinessException, ErrorCode } from '@exceptions';
-import { Response } from 'express';
 import { Cookie, Public, UserAgent } from '@decorators';
 import { AuthConstant } from '@constants';
+import { UserResponse } from '@entities/user/responses';
 
 @Public()
 @Controller('auth')
 export class AuthController {
     constructor(private readonly authService: AuthService) {}
 
+    @UseInterceptors(ClassSerializerInterceptor)
     @Post('register')
     async register(@Body() dto: RegisterDto): Promise<User> {
         const user: User = await this.authService.register(dto);
@@ -21,7 +23,7 @@ export class AuthController {
             throw new BusinessException(ErrorCode.BAD_REQUEST_TO_REGISTER_USER);
         }
 
-        return user;
+        return new UserResponse(user);
     }
 
     @Post('login')
