@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Post, Req, Res } from '@nestjs/common';
+import { Body, Controller, Get, Post, Res } from '@nestjs/common';
 import { LoginDto, RegisterDto } from './dto';
 import { AuthService } from './auth.service';
 import { User } from '@prisma/client';
@@ -39,7 +39,7 @@ export class AuthController {
         @Cookie(AuthConstant.REFRESH_TOKEN_COOKIES_NAME) refreshToken: string,
         @Res() res: Response,
         @UserAgent() userAgent: string,
-    ) {
+    ): Promise<void> {
         if (!refreshToken) {
             throw new BusinessException(ErrorCode.REFRESH_TOKEN_NOT_FOUND);
         }

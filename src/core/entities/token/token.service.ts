@@ -28,16 +28,17 @@ export class TokenService {
     public async findByToken(token: string): Promise<Token> {
         return this.tokenRepository.findByToken(token);
     }
-    public async findByUserIdAndUserAgent(userId: string, uerAgent: string) {
+    public async findByUserIdAndUserAgent(userId: string, uerAgent: string): Promise<Token> {
         return this.tokenRepository.findByUserIdAndUserAgent(userId, uerAgent);
     }
 
-    private async createTokenOrThrowExceptionIfFailed(createCallback: Promise<Token>): Promise<Token> {
-        const refreshToken: Token = await createCallback;
+    private async createTokenOrThrowExceptionIfFailed(createTokenCallback: Promise<Token>): Promise<Token> {
+        const refreshToken: Token = await createTokenCallback;
 
         if (!refreshToken) {
             throw new BusinessException(ErrorCode.REFRESH_TOKEN_NOT_CREATED);
         }
+
         return refreshToken;
     }
 }

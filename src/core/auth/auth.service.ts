@@ -37,7 +37,7 @@ export class AuthService {
         if (!user || !compareSync(dto.password, user.password)) {
             throw new BusinessException(ErrorCode.INCORRECT_PASSWORD_OR_EMAIL);
         }
-        return this.generateTokens(user, userAgent);
+        return this.generateAuthTokens(user, userAgent);
     }
 
     public async refreshTokens(refreshToken: string, userAgent: string): Promise<AuthTokens> {
@@ -52,8 +52,9 @@ export class AuthService {
         if (new Date(existRefreshToken.exp) < new Date()) {
             throw new BusinessException(ErrorCode.REFRESH_TOKEN_NOT_FOUND);
         }
+
         const user: User = await this.findExistUserById(existRefreshToken.userId);
-        return this.generateTokens(user, userAgent);
+        return this.generateAuthTokens(user, userAgent);
     }
 
     public setRefreshTokenToCookies(tokens: AuthTokens, res: Response): void {
@@ -71,7 +72,7 @@ export class AuthService {
         res.status(HttpStatus.CREATED).json({ accessToken: tokens.accessToken });
     }
 
-    private async generateTokens(user: User, userAgent: string): Promise<AuthTokens> {
+    private async generateAuthTokens(user: User, userAgent: string): Promise<AuthTokens> {
         const accessToken: string = this.jwtService.sign({
             id: user.id,
             email: user.email,
