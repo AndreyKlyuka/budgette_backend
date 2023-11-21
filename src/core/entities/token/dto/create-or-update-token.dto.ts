@@ -1,6 +1,6 @@
 export class CreateOrUpdateTokenDto {
     token: string;
-    expiresIn: Date;
+    exp: Date;
     userId: string;
     userAgent: string;
 }

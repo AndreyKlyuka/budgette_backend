@@ -9,7 +9,7 @@ export class UserController {
 
     @Get(':email')
     getOne(@Param('email') email: string): Promise<User> {
-        return this.userService.findOneByEmail(email);
+        return this.userService.findByEmail(email);
     }
     @Get()
     getAll(): Promise<User[]> {

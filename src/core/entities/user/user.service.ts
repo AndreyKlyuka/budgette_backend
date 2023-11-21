@@ -10,7 +10,7 @@ export class UserService {
     constructor(private readonly userRepository: UserRepository) {}
 
     public async create(dto: CreateOrUpdateUserDto): Promise<User> {
-        const user: User = await this.findOneByEmail(dto.email);
+        const user: User = await this.findByEmail(dto.email);
 
         if (user) {
             throw new BusinessException(ErrorCode.USER_EMAIL_ALREADY_EXIST);
@@ -19,10 +19,10 @@ export class UserService {
         const hashedPassword: string = this.hashPassword(dto.password);
         return this.userRepository.create({ ...dto, password: hashedPassword });
     }
-    public async findOneByEmail(email: string): Promise<User> {
+    public async findByEmail(email: string): Promise<User> {
         return this.userRepository.findByEmail(email);
     }
-    public async findOneById(id: string): Promise<User> {
+    public async findById(id: string): Promise<User> {
         return this.userRepository.findById(id);
     }
     public async findAll(): Promise<User[]> {

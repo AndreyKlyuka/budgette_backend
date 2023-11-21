@@ -23,10 +23,11 @@ export class UserRepository {
     public async findAll(): Promise<User[]> {
         return this.prismaService.user.findMany();
     }
-    public async update(id: string, data: CreateOrUpdateUserDto): Promise<User> {
-        return this.prismaService.user.update({
-            where: { id: id },
-            data: data,
-        });
-    }
+    //Need for future user update logic
+    // public async update(id: string, dto: CreateOrUpdateUserDto): Promise<User> {
+    //     return this.prismaService.user.update({
+    //         where: { id: id },
+    //         data: { ...dto },
+    //     });
+    // }
 }

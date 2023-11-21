@@ -9,14 +9,14 @@ export class TokenRepository {
 
     public async create(dto: CreateOrUpdateTokenDto): Promise<Token> {
         return this.prismaService.token.create({
-            data: { token: dto.token, exp: dto.expiresIn, userId: dto.userId, userAgent: dto.userAgent },
+            data: { ...dto },
         });
     }
 
-    public async update(dto: CreateOrUpdateTokenDto, token: string): Promise<Token> {
+    public async update({ token, exp }: CreateOrUpdateTokenDto, existToken: string): Promise<Token> {
         return this.prismaService.token.update({
-            where: { token: token },
-            data: { token: dto.token, exp: dto.expiresIn },
+            where: { token: existToken },
+            data: { token, exp },
         });
     }
     public async findByToken(token: string): Promise<Token> {
@@ -24,7 +24,7 @@ export class TokenRepository {
             where: { token: token },
         });
     }
-    public async findByUserIdAndUserAgent(userId: string, userAgent: string) {
+    public async findByUserIdAndUserAgent(userId: string, userAgent: string): Promise<Token> {
         return this.prismaService.token.findFirst({
             where: {
                 userId: userId,

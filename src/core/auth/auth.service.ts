@@ -22,7 +22,7 @@ export class AuthService {
         private readonly configService: ConfigService,
     ) {}
     public async register(dto: RegisterDto): Promise<User> {
-        const user: User = await this.findExistUserByEmail(dto.email);
+        const user: User = await this.userService.findByEmail(dto.email);
 
         if (user) {
             throw new BusinessException(ErrorCode.BAD_REQUEST_TO_REGISTER_USER);
@@ -32,7 +32,7 @@ export class AuthService {
     }
 
     public async login(dto: LoginDto, userAgent: string): Promise<AuthTokens> {
-        const user: User = await this.findExistUserByEmail(dto.email);
+        const user: User = await this.userService.findByEmail(dto.email);
 
         if (!user || !compareSync(dto.password, user.password)) {
             throw new BusinessException(ErrorCode.INCORRECT_PASSWORD_OR_EMAIL);
@@ -40,7 +40,7 @@ export class AuthService {
         return this.generateAuthTokens(user, userAgent);
     }
 
-    public async refreshTokens(refreshToken: string, userAgent: string): Promise<AuthTokens> {
+    public async refreshAuthTokens(refreshToken: string, userAgent: string): Promise<AuthTokens> {
         const existRefreshToken: Token = await this.tokenService.findByToken(refreshToken);
 
         if (!existRefreshToken) {
@@ -53,7 +53,8 @@ export class AuthService {
             throw new BusinessException(ErrorCode.REFRESH_TOKEN_NOT_FOUND);
         }
 
-        const user: User = await this.findExistUserById(existRefreshToken.userId);
+        const user: User = await this.userService.findById(existRefreshToken.userId);
+
         return this.generateAuthTokens(user, userAgent);
     }
 
@@ -98,18 +99,11 @@ export class AuthService {
         return this.tokenService.upsert(
             {
                 token: v4(),
-                expiresIn: add(new Date(), { days: expireTimeInDays }),
+                exp: add(new Date(), { days: expireTimeInDays }),
                 userId: userId,
                 userAgent: userAgent,
             },
             token,
         );
-    }
-
-    private async findExistUserByEmail(email: string): Promise<User> {
-        return this.userService.findOneByEmail(email);
-    }
-    private async findExistUserById(id: string): Promise<User> {
-        return this.userService.findOneById(id);
     }
 }

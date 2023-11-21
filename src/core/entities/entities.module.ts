@@ -4,6 +4,6 @@ import { TokenModule } from './token/token.module';
 
 @Module({
     imports: [UserModule, TokenModule],
-    exports: [UserModule],
+    exports: [UserModule, TokenModule],
 })
 export class EntitiesModule {}

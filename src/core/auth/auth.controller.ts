@@ -44,7 +44,7 @@ export class AuthController {
             throw new BusinessException(ErrorCode.REFRESH_TOKEN_NOT_FOUND);
         }
 
-        const tokens: AuthTokens = await this.authService.refreshTokens(refreshToken, userAgent);
+        const tokens: AuthTokens = await this.authService.refreshAuthTokens(refreshToken, userAgent);
 
         if (!tokens) {
             throw new BusinessException(ErrorCode.REFRESH_TOKENS_UNABLE);
