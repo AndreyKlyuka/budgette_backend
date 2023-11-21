@@ -5,9 +5,10 @@ import { User } from '@prisma/client';
 import { AuthTokens } from './interfaces/tokens.interface';
 import { BusinessException, ErrorCode } from '@exceptions';
 import { Response } from 'express';
-import { Cookie, UserAgent } from '@decorators';
+import { Cookie, Public, UserAgent } from '@decorators';
 import { AuthConstant } from '@core/auth/constants/auth.constant';
 
+@Public()
 @Controller('auth')
 export class AuthController {
     constructor(private readonly authService: AuthService) {}
