@@ -8,7 +8,6 @@ import { Cookie, Public, UserAgent } from '@decorators';
 import { AuthConstant } from '@constants';
 import { AuthTokens } from './interfaces';
 import { UserResponse } from '@entities/user/responses';
-``;
 
 @Public()
 @Controller('auth')
