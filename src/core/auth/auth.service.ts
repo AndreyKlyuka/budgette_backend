@@ -10,8 +10,8 @@ import { TokenService } from '@entities/token/token.service';
 import { v4 } from 'uuid';
 import { add } from 'date-fns';
 import { ConfigService } from '@nestjs/config';
-import { AuthConstant } from './constants/auth.constant';
 import { Response } from 'express';
+import { AuthConstant, ModeConstants } from '@constants';
 
 @Injectable()
 export class AuthService {
@@ -67,7 +67,8 @@ export class AuthService {
             httpOnly: true,
             sameSite: 'lax',
             expires: new Date(tokens.refreshToken.exp),
-            secure: this.configService.get(AuthConstant.NODE_ENV, AuthConstant.DEVELOPMENT) === AuthConstant.PRODUCTION,
+            secure:
+                this.configService.get(ModeConstants.NODE_ENV, ModeConstants.DEVELOPMENT) === ModeConstants.PRODUCTION,
             path: '/',
         });
         res.status(HttpStatus.CREATED).json({ accessToken: tokens.accessToken });

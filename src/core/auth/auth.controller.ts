@@ -6,7 +6,7 @@ import { AuthTokens } from './interfaces/tokens.interface';
 import { BusinessException, ErrorCode } from '@exceptions';
 import { Response } from 'express';
 import { Cookie, Public, UserAgent } from '@decorators';
-import { AuthConstant } from '@core/auth/constants/auth.constant';
+import { AuthConstant } from '@constants';
 
 @Public()
 @Controller('auth')
