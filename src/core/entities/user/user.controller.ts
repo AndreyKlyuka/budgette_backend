@@ -29,7 +29,7 @@ export class UserController {
         const users: User[] = await this.userService.findAll();
         return users.map((user: User) => new UserResponse(user));
     }
-    @Delete()
+    @Delete(':id')
     async deleteOne(
         @Param('id', ParseUUIDPipe) id: string,
         @CurrentUser() currentUser: JwtPayload,
