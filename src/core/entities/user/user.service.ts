@@ -1,9 +1,10 @@
 import { Injectable } from '@nestjs/common';
 import { CreateOrUpdateUserDto } from './dto';
 import { UserRepository } from './repository/user.repository';
-import { genSaltSync, hashSync } from 'bcrypt';
 import { BusinessException, ErrorCode } from '@exceptions';
-import { User } from '@prisma/client';
+import { Role, User } from '@prisma/client';
+import { JwtPayload } from '@core/auth/interfaces';
+import { hashPassword } from '@utils/hash-password.helper';
 
 @Injectable()
 export class UserService {
@@ -16,9 +17,10 @@ export class UserService {
             throw new BusinessException(ErrorCode.BAD_REQUEST_TO_REGISTER_USER);
         }
 
-        const hashedPassword: string = this.hashPassword(dto.password);
+        const hashedPassword: string = hashPassword(dto.password);
         return this.userRepository.create({ ...dto, password: hashedPassword });
     }
+
     public async findByEmail(email: string): Promise<User> {
         return this.userRepository.findByEmail(email);
     }
@@ -28,7 +30,15 @@ export class UserService {
     public async findAll(): Promise<User[]> {
         return this.userRepository.findAll();
     }
-    private hashPassword(password: string): string {
-        return hashSync(password, genSaltSync(10));
+
+    public async delete(id: string, currentUser: JwtPayload): Promise<Partial<User>> {
+        const isUserAdmin: boolean = currentUser.roles.includes(Role.ADMIN);
+        const isUserCurrent: boolean = id === currentUser.id;
+
+        if (!isUserAdmin || isUserCurrent) {
+            throw new BusinessException(ErrorCode.FORBIDDEN_TO_DELETE_USER);
+        }
+
+        return this.userRepository.delete(id);
     }
 }

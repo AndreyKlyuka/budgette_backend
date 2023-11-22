@@ -32,7 +32,9 @@
             "@decorators": ["src/common/decorators"],
             "@decorators/*": ["src/common/decorators/*"],
             "@exceptions": ["src/common/exceptions"],
-            "@exceptions/*": ["src/common/exceptions/*"]
+            "@exceptions/*": ["src/common/exceptions/*"],
+            "@utils": ["src/common/utils"],
+            "@utils/*": ["src/common/utils/*"]
         }
     }
 }
