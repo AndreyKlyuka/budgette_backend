@@ -22,47 +22,51 @@ export class AuthService {
         private readonly configService: ConfigService,
     ) {}
     public async register(dto: RegisterDto): Promise<User> {
-        const user: User = await this.userService.findByEmail(dto.email);
+        const user: User = await this.userService.create(dto);
 
-        if (user) {
+        if (!user) {
             throw new BusinessException(ErrorCode.BAD_REQUEST_TO_REGISTER_USER);
         }
-
-        return this.userService.create(dto);
+        return user;
     }
 
-    public async login(dto: LoginDto, userAgent: string): Promise<AuthTokens> {
+    public async login(dto: LoginDto, res: Response, userAgent: string): Promise<void> {
         const user: User = await this.userService.findByEmail(dto.email);
 
         if (!user || !compareSync(dto.password, user.password)) {
             throw new BusinessException(ErrorCode.INCORRECT_PASSWORD_OR_EMAIL);
         }
-        return this.generateAuthTokens(user, userAgent);
+
+        const authTokens: AuthTokens = await this.generateAuthTokens(user, userAgent);
+        this.setRefreshTokenToCookiesAndReturnAccessTokens(authTokens, res);
     }
 
-    public async refreshAuthTokens(refreshToken: string, userAgent: string): Promise<AuthTokens> {
-        const existRefreshToken: Token = await this.tokenService.findByToken(refreshToken);
+    public async logout(refreshToken: string, res: Response): Promise<void> {
+        await this.tokenService.deleteByToken(refreshToken);
+        res.cookie(AuthConstant.REFRESH_TOKEN_COOKIES_NAME, '', {
+            httpOnly: true,
+            secure: true,
+            expires: new Date(),
+        });
+        res.sendStatus(HttpStatus.NO_CONTENT);
+    }
 
-        if (!existRefreshToken) {
-            throw new BusinessException(ErrorCode.REFRESH_TOKEN_NOT_FOUND);
-        }
+    public async refreshAuthTokens(refreshToken: string, res: Response, userAgent: string): Promise<void> {
+        const existRefreshToken: Token = await this.tokenService.deleteByToken(refreshToken);
+        const isRefreshTokenExpired: boolean = new Date(existRefreshToken.exp) < new Date();
 
-        await this.tokenService.deleteByToken(existRefreshToken.token);
-
-        if (new Date(existRefreshToken.exp) < new Date()) {
+        if (isRefreshTokenExpired) {
             throw new BusinessException(ErrorCode.REFRESH_TOKEN_NOT_FOUND);
         }
 
         const user: User = await this.userService.findById(existRefreshToken.userId);
 
-        return this.generateAuthTokens(user, userAgent);
+        const authTokens: AuthTokens = await this.generateAuthTokens(user, userAgent);
+
+        this.setRefreshTokenToCookiesAndReturnAccessTokens(authTokens, res);
     }
 
-    public setRefreshTokenToCookies(tokens: AuthTokens, res: Response): void {
-        if (!tokens) {
-            throw new BusinessException(ErrorCode.REFRESH_TOKEN_NOT_FOUND);
-        }
-
+    public setRefreshTokenToCookiesAndReturnAccessTokens(tokens: AuthTokens, res: Response): void {
         res.cookie(AuthConstant.REFRESH_TOKEN_COOKIES_NAME, tokens.refreshToken.token, {
             httpOnly: true,
             sameSite: 'lax',
@@ -86,7 +90,13 @@ export class AuthService {
             this.configService.get(AuthConstant.JWT_REFRESH_EXP_IN_DAYS),
         );
 
-        return { accessToken: 'Bearer ' + accessToken, refreshToken };
+        const authTokens: AuthTokens = { accessToken: 'Bearer ' + accessToken, refreshToken };
+
+        if (!authTokens) {
+            throw new BusinessException(ErrorCode.REFRESH_TOKENS_UNABLE);
+        }
+
+        return authTokens;
     }
 
     private async generateRefreshToken(
