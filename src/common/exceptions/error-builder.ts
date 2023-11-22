@@ -9,6 +9,7 @@ enum AppErrorCode {
     REFRESH_TOKEN_NOT_CREATED = 'Refresh token not created',
     REFRESH_TOKEN_NOT_FOUND = 'Refresh token not found',
     REFRESH_TOKENS_UNABLE = 'Unable to refresh tokens',
+    FORBIDDEN_TO_DELETE_USER = 'Forbidden to delete user',
 }
 export const ErrorCode = { ...AppErrorCode };
 
@@ -50,5 +51,9 @@ export const ErrorBody: ErrorBodyType = {
     [ErrorCode.REFRESH_TOKENS_UNABLE]: {
         statusCode: HttpStatus.UNAUTHORIZED,
         message: ErrorCode.REFRESH_TOKENS_UNABLE,
+    },
+    [ErrorCode.FORBIDDEN_TO_DELETE_USER]: {
+        statusCode: HttpStatus.FORBIDDEN,
+        message: ErrorCode.FORBIDDEN_TO_DELETE_USER,
     },
 };
