@@ -16,13 +16,13 @@ export class TokenService {
     }
 
     public async deleteByToken(token: string): Promise<Token> {
-        const deletedToken: Token = await this.tokenRepository.deleteByToken(token);
+        const existToken: Token = await this.tokenRepository.findByToken(token);
 
-        if (!deletedToken) {
+        if (!existToken) {
             throw new BusinessException(ErrorCode.REFRESH_TOKEN_NOT_FOUND);
         }
 
-        return deletedToken;
+        return await this.tokenRepository.deleteByToken(token);
     }
 
     public async findByToken(token: string): Promise<Token> {
