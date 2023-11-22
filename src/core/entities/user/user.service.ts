@@ -2,9 +2,8 @@ import { Injectable } from '@nestjs/common';
 import { CreateOrUpdateUserDto } from './dto';
 import { UserRepository } from './repository/user.repository';
 import { BusinessException, ErrorCode } from '@exceptions';
-import { User } from '@prisma/client';
+import { Role, User } from '@prisma/client';
 import { JwtPayload } from '@core/auth/interfaces';
-import { RolesConstant } from '@constants/roles.constant';
 import { hashPassword } from '@utils/hash-password.helper';
 
 @Injectable()
@@ -33,12 +32,13 @@ export class UserService {
     }
 
     public async delete(id: string, currentUser: JwtPayload): Promise<Partial<User>> {
-        if (!currentUser.roles.includes(RolesConstant.ADMIN)) {
+        const isUserAdmin: boolean = currentUser.roles.includes(Role.ADMIN);
+        const isUserCurrent: boolean = id === currentUser.id;
+
+        if (!isUserAdmin || isUserCurrent) {
             throw new BusinessException(ErrorCode.FORBIDDEN_TO_DELETE_USER);
         }
-        if (id === currentUser.id) {
-            throw new BusinessException(ErrorCode.FORBIDDEN_TO_DELETE_USER);
-        }
+
         return this.userRepository.delete(id);
     }
 }
