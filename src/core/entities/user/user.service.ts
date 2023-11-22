@@ -13,7 +13,7 @@ export class UserService {
         const user: User = await this.findByEmail(dto.email);
 
         if (user) {
-            throw new BusinessException(ErrorCode.USER_EMAIL_ALREADY_EXIST);
+            throw new BusinessException(ErrorCode.BAD_REQUEST_TO_REGISTER_USER);
         }
 
         const hashedPassword: string = this.hashPassword(dto.password);
