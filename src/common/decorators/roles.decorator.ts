@@ -1,5 +1,5 @@
 import { SetMetadata } from '@nestjs/common';
 import { Role } from '@prisma/client';
-import { DecoratorsConstant } from '@constants';
+import { DecoratorConfig } from '@constants';
 
-export const Roles = (...roles: Role[]) => SetMetadata(DecoratorsConstant.ROLES_KEY, roles);
+export const Roles = (...roles: Role[]) => SetMetadata(DecoratorConfig.ROLES_KEY, roles);

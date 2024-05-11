@@ -1,4 +1,4 @@
-export class CreateOrUpdateTokenDto {
+export class TokenDto {
     token: string;
     exp: Date;
     userId: string;

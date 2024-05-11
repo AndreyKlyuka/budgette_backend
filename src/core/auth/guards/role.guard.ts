@@ -1,13 +1,13 @@
 import { CanActivate, ExecutionContext, Injectable } from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
 import { Role } from '@prisma/client';
-import { DecoratorsConstant } from '@constants';
+import { DecoratorConfig } from '@constants';
 
 @Injectable()
 export class RoleGuard implements CanActivate {
     constructor(private reflector: Reflector) {}
     canActivate(context: ExecutionContext): boolean {
-        const requiredRoles = this.reflector.getAllAndOverride<Role[]>(DecoratorsConstant.ROLES_KEY, [
+        const requiredRoles = this.reflector.getAllAndOverride<Role[]>(DecoratorConfig.ROLES_KEY, [
             context.getHandler(),
             context.getClass(),
         ]);

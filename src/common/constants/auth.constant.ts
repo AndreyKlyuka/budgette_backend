@@ -1,7 +1,13 @@
-export enum AuthConstant {
+export enum AuthConfig {
     JWT_SECRET = 'JWT_SECRET',
     JWT_EXP = 'JWT_EXP',
-    JWT_EXP_DEFAULT = '5m',
-    JWT_REFRESH_EXP_IN_DAYS = 'JWT_REFRESH_EXP_IN_DAYS',
+    REFRESH_TOKEN_EXP_IN_DAYS = 'REFRESH_TOKEN_EXP_IN_DAYS',
     REFRESH_TOKEN_COOKIES_NAME = 'refresh_token',
+    ACCESS_TOKEN_PREFIX = 'Bearer',
+}
+
+export enum Auth {
+    JWT_EXP_TIME = '5m',
+    REFRESH_TOKEN_EXP_TIME_IN_DAYS = 30,
+    MIN_PASSWORD_LENGTH = 7,
 }

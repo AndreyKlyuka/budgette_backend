@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { CreateOrUpdateUserDto } from './dto';
+import { UserDto } from './dto';
 import { UserRepository } from './repository/user.repository';
 import { BusinessException, ErrorCode } from '@exceptions';
 import { Role, User } from '@prisma/client';
@@ -10,13 +10,11 @@ import { hashPassword } from '@utils/hash-password.helper';
 export class UserService {
     constructor(private readonly userRepository: UserRepository) {}
 
-    public async create(dto: CreateOrUpdateUserDto): Promise<User> {
+    public async create(dto: UserDto): Promise<User> {
         const user: User = await this.findByEmail(dto.email);
-
         if (user) {
             throw new BusinessException(ErrorCode.BAD_REQUEST_TO_REGISTER_USER);
         }
-
         const hashedPassword: string = hashPassword(dto.password);
         return this.userRepository.create({ ...dto, password: hashedPassword });
     }
@@ -34,11 +32,9 @@ export class UserService {
     public async delete(id: string, currentUser: JwtPayload): Promise<Partial<User>> {
         const isUserAdmin: boolean = currentUser.roles.includes(Role.ADMIN);
         const isUserCurrent: boolean = id === currentUser.id;
-
         if (!isUserAdmin || isUserCurrent) {
             throw new BusinessException(ErrorCode.FORBIDDEN_TO_DELETE_USER);
         }
-
         return this.userRepository.delete(id);
     }
 }

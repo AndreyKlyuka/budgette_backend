@@ -1,7 +1,7 @@
 import { createParamDecorator, ExecutionContext } from '@nestjs/common';
+import { DecoratorConfig } from '@constants';
 
-const USER_AGENT: string = 'user-agent';
 export const UserAgent = createParamDecorator((_: string, ctx: ExecutionContext) => {
     const request = ctx.switchToHttp().getRequest();
-    return request.headers[USER_AGENT];
+    return request.headers[DecoratorConfig.USER_AGENT_KEY];
 });

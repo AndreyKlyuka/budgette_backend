@@ -1,14 +1,15 @@
 import { Injectable } from '@nestjs/common';
-import { CreateOrUpdateUserDto } from '../dto';
+import { UserDto } from '../dto';
 import { PrismaService } from '@database/prisma.service';
-import { User } from '@prisma/client';
+import { Role, User } from '@prisma/client';
 
+const userRole: Role[] = ['USER'];
 @Injectable()
 export class UserRepository {
     constructor(private readonly prismaService: PrismaService) {}
 
-    public async create(dto: CreateOrUpdateUserDto): Promise<User> {
-        return this.prismaService.user.create({ data: { ...dto, roles: ['USER'] } });
+    public async create(dto: UserDto): Promise<User> {
+        return this.prismaService.user.create({ data: { ...dto, roles: userRole } });
     }
     public async findByEmail(email: string): Promise<User> {
         return this.prismaService.user.findFirst({

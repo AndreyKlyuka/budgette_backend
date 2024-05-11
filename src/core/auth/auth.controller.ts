@@ -5,7 +5,7 @@ import { AuthService } from './auth.service';
 import { User } from '@prisma/client';
 import { BusinessException, ErrorCode } from '@exceptions';
 import { Cookie, Public, UserAgent } from '@decorators';
-import { AuthConstant } from '@constants';
+import { AuthConfig } from '@constants';
 import { UserResponse } from '@entities/user/responses';
 
 @Public()
@@ -27,19 +27,18 @@ export class AuthController {
 
     @Get('logout')
     async logout(
-        @Cookie(AuthConstant.REFRESH_TOKEN_COOKIES_NAME) refreshToken: string,
+        @Cookie(AuthConfig.REFRESH_TOKEN_COOKIES_NAME) refreshToken: string,
         @Res() res: Response,
     ): Promise<void> {
         if (!refreshToken) {
             throw new BusinessException(ErrorCode.REFRESH_TOKEN_NOT_FOUND);
         }
-
         await this.authService.logout(refreshToken, res);
     }
 
     @Get('refresh-tokens')
     async refreshTokens(
-        @Cookie(AuthConstant.REFRESH_TOKEN_COOKIES_NAME) refreshToken: string,
+        @Cookie(AuthConfig.REFRESH_TOKEN_COOKIES_NAME) refreshToken: string,
         @Res() res: Response,
         @UserAgent() userAgent: string,
     ): Promise<void> {

@@ -1,19 +1,19 @@
 import { PrismaService } from '@database/prisma.service';
 import { Injectable } from '@nestjs/common';
-import { CreateOrUpdateTokenDto } from '../dto';
+import { TokenDto } from '../dto';
 import { Token } from '@prisma/client';
 
 @Injectable()
 export class TokenRepository {
     constructor(private readonly prismaService: PrismaService) {}
 
-    public async create(dto: CreateOrUpdateTokenDto): Promise<Token> {
+    public async create(dto: TokenDto): Promise<Token> {
         return this.prismaService.token.create({
             data: { ...dto },
         });
     }
 
-    public async update({ token, exp }: CreateOrUpdateTokenDto, existToken: string): Promise<Token> {
+    public async update({ token, exp }: TokenDto, existToken: string): Promise<Token> {
         return this.prismaService.token.update({
             where: { token: existToken },
             data: { token, exp },
