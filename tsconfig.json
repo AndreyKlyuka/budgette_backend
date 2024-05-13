@@ -20,12 +20,12 @@
         "paths": {
             "@config": ["src/config"],
             "@config/*": ["src/config/*"],
+            "@database": ["src/database"],
+            "@database/*": ["src/database/*"],
             "@core": ["src/core"],
             "@core/*": ["src/core/*"],
             "@entities": ["src/core/entities"],
             "@entities/*": ["src/core/entities/*"],
-            "@database": ["src/database"],
-            "@database/*": ["src/database/*"],
 
             "@auth": ["src/core/modules/auth"],
             "@auth/*": ["src/core/modules/auth/*"],
