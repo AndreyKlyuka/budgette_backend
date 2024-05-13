@@ -1,18 +1,18 @@
 import { HttpStatus, Injectable } from '@nestjs/common';
 import { LoginDto, RegisterDto } from './dto';
-import { UserService } from '@entities/user/user.service';
 import { Token, User } from '@prisma/client';
-import { AuthTokens } from './interfaces';
 import { compareSync } from 'bcrypt';
-import { BusinessException, ErrorCode } from '@exceptions';
 import { JwtService } from '@nestjs/jwt';
-import { TokenService } from '@entities/token/token.service';
 import { v4 } from 'uuid';
 import { add } from 'date-fns';
 import { ConfigService } from '@nestjs/config';
 import { Response } from 'express';
+import { UserService } from '@entities/user/user.service';
+import { TokenService } from '@entities/token/token.service';
+import { CookieService } from '@common-services';
+import { BusinessException, ErrorCode } from '@exceptions';
+import { AuthTokens } from '@interfaces';
 import { Auth, AuthConfig } from '@constants';
-import { CookieService } from '../../common/services';
 
 @Injectable()
 export class AuthService {

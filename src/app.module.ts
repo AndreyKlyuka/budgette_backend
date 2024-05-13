@@ -1,9 +1,9 @@
 import { Module } from '@nestjs/common';
 import { DatabaseModule } from '@database/database.module';
-import { AuthModule } from '@core/auth/auth.module';
 import { ConfigModule } from '@nestjs/config';
 import { APP_GUARD } from '@nestjs/core';
-import { JwtAuthGuard } from '@core/auth/guards/jwt-auth.guard';
+import { JwtAuthGuard } from '@auth/guards/jwt-auth.guard';
+import { AuthModule } from '@auth/auth.module';
 
 @Module({
     imports: [DatabaseModule, AuthModule, ConfigModule.forRoot({ isGlobal: true })],

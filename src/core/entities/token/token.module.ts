@@ -1,6 +1,6 @@
 import { Module } from '@nestjs/common';
 import { TokenService } from './token.service';
-import { TokenRepository } from '@entities/token/repository/token.repository';
+import { TokenRepository } from './repository/token.repository';
 
 @Module({
     providers: [TokenRepository, TokenService],

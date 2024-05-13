@@ -1,6 +1,6 @@
 import { ValidationArguments, ValidatorConstraint, ValidatorConstraintInterface } from 'class-validator';
-import { RegisterDto } from '@core/auth/dto';
 import { DecoratorConfig } from '@constants';
+import { RegisterDto } from '@auth/dto';
 
 @ValidatorConstraint({ name: DecoratorConfig.IS_PASSWORD_MATCHING_KEY, async: false })
 export class PasswordsMatchingDecorator implements ValidatorConstraintInterface {

@@ -27,12 +27,19 @@
             "@database": ["src/database"],
             "@database/*": ["src/database/*"],
 
+            "@auth": ["src/core/modules/auth"],
+            "@auth/*": ["src/core/modules/auth/*"],
+
             "@constants": ["src/common/constants"],
             "@constants/*": ["src/common/constants/*"],
             "@decorators": ["src/common/decorators"],
             "@decorators/*": ["src/common/decorators/*"],
             "@exceptions": ["src/common/exceptions"],
             "@exceptions/*": ["src/common/exceptions/*"],
+            "@interfaces": ["src/common/interfaces"],
+            "@interfaces/*": ["src/common/interfaces/*"],
+            "@common-services": ["src/common/services"],
+            "@common-services/*": ["src/common/services/*"],
             "@utils": ["src/common/utils"],
             "@utils/*": ["src/common/utils/*"]
         }

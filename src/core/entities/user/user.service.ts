@@ -3,8 +3,8 @@ import { UserDto } from './dto';
 import { UserRepository } from './repository/user.repository';
 import { BusinessException, ErrorCode } from '@exceptions';
 import { Role, User } from '@prisma/client';
-import { JwtPayload } from '@core/auth/interfaces';
 import { hashPassword } from '@utils/hash-password.helper';
+import { JwtPayload } from '@interfaces';
 
 @Injectable()
 export class UserService {

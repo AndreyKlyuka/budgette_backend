@@ -11,7 +11,7 @@ import { User } from '@prisma/client';
 import { UserService } from './user.service';
 import { UserResponse } from './responses';
 import { CurrentUser } from '@decorators';
-import { JwtPayload } from '@core/auth/interfaces';
+import { JwtPayload } from '@interfaces';
 
 @Controller('user')
 export class UserController {

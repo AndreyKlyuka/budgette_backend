@@ -3,13 +3,13 @@ import { UserDto } from '../dto';
 import { PrismaService } from '@database/prisma.service';
 import { Role, User } from '@prisma/client';
 
-const userRole: Role[] = ['USER'];
+const defaultUserRole: Role[] = ['USER'];
 @Injectable()
 export class UserRepository {
     constructor(private readonly prismaService: PrismaService) {}
 
     public async create(dto: UserDto): Promise<User> {
-        return this.prismaService.user.create({ data: { ...dto, roles: userRole } });
+        return this.prismaService.user.create({ data: { ...dto, roles: defaultUserRole } });
     }
     public async findByEmail(email: string): Promise<User> {
         return this.prismaService.user.findFirst({

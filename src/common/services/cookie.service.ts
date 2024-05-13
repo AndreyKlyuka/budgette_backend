@@ -1,8 +1,8 @@
 import { Injectable } from '@nestjs/common';
 import { Response } from 'express';
-import { AuthConfig, Mode, ModeConfig } from '@constants';
-import { AuthTokens } from '@core/auth/interfaces';
 import { ConfigService } from '@nestjs/config';
+import { AuthConfig, Mode, ModeConfig } from '@constants';
+import { AuthTokens } from '@interfaces';
 
 @Injectable()
 export class CookieService {
