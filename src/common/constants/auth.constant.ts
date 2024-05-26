@@ -6,8 +6,8 @@ export enum AuthConfig {
     ACCESS_TOKEN_PREFIX = 'Bearer',
 }
 
-export enum Auth {
-    JWT_EXP_TIME = '5m',
-    REFRESH_TOKEN_EXP_TIME_IN_DAYS = 30,
-    MIN_PASSWORD_LENGTH = 7,
-}
+export const Auth = {
+    JWT_EXP_TIME: '5m',
+    REFRESH_TOKEN_EXP_TIME_IN_DAYS: 30,
+    MIN_PASSWORD_LENGTH: 7,
+} as const;

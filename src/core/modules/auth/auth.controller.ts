@@ -3,7 +3,6 @@ import { Response } from 'express';
 import { LoginDto, RegisterDto } from './dto';
 import { AuthService } from './auth.service';
 import { User } from '@prisma/client';
-import { BusinessException, ErrorCode } from '@exceptions';
 import { Cookie, Public, UserAgent } from '@decorators';
 import { AuthConfig } from '@constants';
 import { UserResponse } from '@entities/user/responses';
@@ -30,9 +29,6 @@ export class AuthController {
         @Cookie(AuthConfig.REFRESH_TOKEN_COOKIES_NAME) refreshToken: string,
         @Res() res: Response,
     ): Promise<void> {
-        if (!refreshToken) {
-            throw new BusinessException(ErrorCode.REFRESH_TOKEN_NOT_FOUND);
-        }
         await this.authService.logout(refreshToken, res);
     }
 
@@ -42,9 +38,6 @@ export class AuthController {
         @Res() res: Response,
         @UserAgent() userAgent: string,
     ): Promise<void> {
-        if (!refreshToken) {
-            throw new BusinessException(ErrorCode.REFRESH_TOKEN_NOT_FOUND);
-        }
         await this.authService.refreshAuthTokens(refreshToken, res, userAgent);
     }
 }

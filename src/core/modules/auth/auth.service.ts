@@ -42,12 +42,18 @@ export class AuthService {
     }
 
     public async logout(refreshToken: string, res: Response): Promise<void> {
+        if (!refreshToken) {
+            throw new BusinessException(ErrorCode.REFRESH_TOKEN_NOT_FOUND);
+        }
         await this.tokenService.deleteByToken(refreshToken);
         this.cookieService.clearRefreshToken(res);
         res.sendStatus(HttpStatus.NO_CONTENT);
     }
 
     public async refreshAuthTokens(refreshToken: string, res: Response, userAgent: string): Promise<void> {
+        if (!refreshToken) {
+            throw new BusinessException(ErrorCode.REFRESH_TOKEN_NOT_FOUND);
+        }
         const existRefreshToken: Token = await this.tokenService.deleteByToken(refreshToken);
         const isRefreshTokenExpired: boolean = new Date(existRefreshToken.exp) < new Date();
         if (isRefreshTokenExpired) {
@@ -73,10 +79,7 @@ export class AuthService {
         if (!refreshToken) {
             throw new BusinessException(ErrorCode.REFRESH_TOKENS_UNABLE);
         }
-        return {
-            accessToken: AuthConfig.ACCESS_TOKEN_PREFIX + ' ' + accessToken,
-            refreshToken,
-        };
+        return { accessToken, refreshToken };
     }
 
     private async generateRefreshToken(
