@@ -1,6 +1,6 @@
 export class TokenDto {
-    token: string;
-    exp: Date;
-    userId: string;
-    userAgent: string;
+  token: string;
+  exp: Date;
+  userId: string;
+  userAgent: string;
 }

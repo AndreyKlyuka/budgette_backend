@@ -10,34 +10,34 @@ import { UserResponse } from '@entities/user/responses';
 @Public()
 @Controller('auth')
 export class AuthController {
-    constructor(private readonly authService: AuthService) {}
+  constructor(private readonly authService: AuthService) {}
 
-    @UseInterceptors(ClassSerializerInterceptor)
-    @Post('register')
-    async register(@Body() dto: RegisterDto): Promise<User> {
-        const user: User = await this.authService.register(dto);
-        return new UserResponse(user);
-    }
+  @UseInterceptors(ClassSerializerInterceptor)
+  @Post('register')
+  async register(@Body() dto: RegisterDto): Promise<UserResponse> {
+    const user: User = await this.authService.register(dto);
+    return new UserResponse(user);
+  }
 
-    @Post('login')
-    async login(@Body() dto: LoginDto, @Res() res: Response, @UserAgent() userAgent: string): Promise<void> {
-        await this.authService.login(dto, res, userAgent);
-    }
+  @Post('login')
+  async login(@Body() dto: LoginDto, @Res() res: Response, @UserAgent() userAgent: string): Promise<void> {
+    await this.authService.login(dto, res, userAgent);
+  }
 
-    @Get('logout')
-    async logout(
-        @Cookie(AuthConfig.REFRESH_TOKEN_COOKIES_NAME) refreshToken: string,
-        @Res() res: Response,
-    ): Promise<void> {
-        await this.authService.logout(refreshToken, res);
-    }
+  @Post('logout')
+  async logout(
+    @Cookie(AuthConfig.REFRESH_TOKEN_COOKIES_NAME) refreshToken: string,
+    @Res() res: Response,
+  ): Promise<void> {
+    await this.authService.logout(refreshToken, res);
+  }
 
-    @Get('refresh-tokens')
-    async refreshTokens(
-        @Cookie(AuthConfig.REFRESH_TOKEN_COOKIES_NAME) refreshToken: string,
-        @Res() res: Response,
-        @UserAgent() userAgent: string,
-    ): Promise<void> {
-        await this.authService.refreshAuthTokens(refreshToken, res, userAgent);
-    }
+  @Get('refresh-tokens')
+  async refreshTokens(
+    @Cookie(AuthConfig.REFRESH_TOKEN_COOKIES_NAME) refreshToken: string,
+    @Res() res: Response,
+    @UserAgent() userAgent: string,
+  ): Promise<void> {
+    await this.authService.refreshAuthTokens(refreshToken, res, userAgent);
+  }
 }

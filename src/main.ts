@@ -5,18 +5,18 @@ import { CorsOptions } from '@nestjs/common/interfaces/external/cors-options.int
 import { ValidationPipe } from '@nestjs/common';
 
 async function bootstrap() {
-    const app = await NestFactory.create(AppModule);
-    app.setGlobalPrefix('api');
-    app.useGlobalPipes(new ValidationPipe());
-    app.use(cookieParser());
+  const app = await NestFactory.create(AppModule);
+  app.setGlobalPrefix('api');
+  app.useGlobalPipes(new ValidationPipe());
+  app.use(cookieParser());
 
-    const corsOptions: CorsOptions = {
-        origin: 'http://localhost:4200',
-        methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
-        credentials: true,
-    };
+  const corsOptions: CorsOptions = {
+    origin: 'http://localhost:4200',
+    methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
+    credentials: true,
+  };
 
-    app.enableCors(corsOptions);
-    await app.listen(3000);
+  app.enableCors(corsOptions);
+  await app.listen(3000);
 }
 bootstrap();

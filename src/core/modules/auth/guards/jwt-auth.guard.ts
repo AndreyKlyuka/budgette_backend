@@ -6,13 +6,13 @@ import { isPublic } from '@decorators';
 
 @Injectable()
 export class JwtAuthGuard extends AuthGuard('jwt') implements CanActivate {
-    constructor(private readonly reflector: Reflector) {
-        super();
-    }
+  constructor(private readonly reflector: Reflector) {
+    super();
+  }
 
-    canActivate(ctx: ExecutionContext): boolean | Promise<boolean> | Observable<boolean> {
-        const _isPublic: boolean = isPublic(ctx, this.reflector);
+  canActivate(ctx: ExecutionContext): boolean | Promise<boolean> | Observable<boolean> {
+    const _isPublic: boolean = isPublic(ctx, this.reflector);
 
-        return _isPublic ? true : super.canActivate(ctx);
-    }
+    return _isPublic ? true : super.canActivate(ctx);
+  }
 }

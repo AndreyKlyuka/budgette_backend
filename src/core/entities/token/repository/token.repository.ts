@@ -5,36 +5,36 @@ import { Token } from '@prisma/client';
 
 @Injectable()
 export class TokenRepository {
-    constructor(private readonly prismaService: PrismaService) {}
+  constructor(private readonly prismaService: PrismaService) {}
 
-    public async create(dto: TokenDto): Promise<Token> {
-        return this.prismaService.token.create({
-            data: { ...dto },
-        });
-    }
+  public async create(dto: TokenDto): Promise<Token> {
+    return this.prismaService.token.create({
+      data: { ...dto },
+    });
+  }
 
-    public async update({ token, exp }: TokenDto, existToken: string): Promise<Token> {
-        return this.prismaService.token.update({
-            where: { token: existToken },
-            data: { token, exp },
-        });
-    }
-    public async findByToken(token: string): Promise<Token> {
-        return this.prismaService.token.findUnique({
-            where: { token: token },
-        });
-    }
-    public async findByUserIdAndUserAgent(userId: string, userAgent: string): Promise<Token> {
-        return this.prismaService.token.findFirst({
-            where: {
-                userId: userId,
-                userAgent: userAgent,
-            },
-        });
-    }
-    public async deleteByToken(token: string): Promise<Token> {
-        return this.prismaService.token.delete({
-            where: { token: token },
-        });
-    }
+  public async update({ token, exp }: TokenDto, existToken: string): Promise<Token> {
+    return this.prismaService.token.update({
+      where: { token: existToken },
+      data: { token, exp },
+    });
+  }
+  public async findByToken(token: string): Promise<Token> {
+    return this.prismaService.token.findUnique({
+      where: { token: token },
+    });
+  }
+  public async findByUserIdAndUserAgent(userId: string, userAgent: string): Promise<Token> {
+    return this.prismaService.token.findFirst({
+      where: {
+        userId: userId,
+        userAgent: userAgent,
+      },
+    });
+  }
+  public async deleteByToken(token: string): Promise<Token> {
+    return this.prismaService.token.delete({
+      where: { token: token },
+    });
+  }
 }

@@ -10,8 +10,8 @@ import { EntitiesModule } from '@entities/entities.module';
 import { CommonServicesModule } from '@common-services/common-services.module';
 
 @Module({
-    controllers: [AuthController],
-    providers: [AuthService, ...STRATEGIES, ...GUARDS],
-    imports: [EntitiesModule, CommonServicesModule, PassportModule, JwtModule.registerAsync(jwtModuleAsyncOptions())],
+  controllers: [AuthController],
+  providers: [AuthService, ...STRATEGIES, ...GUARDS],
+  imports: [EntitiesModule, CommonServicesModule, PassportModule, JwtModule.registerAsync(jwtModuleAsyncOptions())],
 })
 export class AuthModule {}
